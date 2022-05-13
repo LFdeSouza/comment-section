@@ -1,7 +1,9 @@
 import React from "react";
 import { iconPlus, iconMinus, iconReply } from "./icons";
 
-const Comment = ({ user, content, createdAt, score, replies }) => {
+const Comment = ({ comment, updateScore, index }) => {
+  const { user, content, createdAt, score, replies, id } = comment;
+
   return (
     <>
       <div className="mx-auto flex w-11/12 flex-col rounded-md bg-white p-4 sm:flex-row sm:items-start sm:gap-4 sm:p-6 md:w-full">
@@ -23,11 +25,17 @@ const Comment = ({ user, content, createdAt, score, replies }) => {
 
         <div className="mt-2 flex items-center justify-between">
           <div className="flex w-fit items-center justify-center gap-4 rounded-lg bg-lightGray py-2 px-4 sm:min-h-[7.5rem] sm:flex-col sm:p-2">
-            <i className=" flex h-4 w-4 cursor-pointer items-center justify-center">
+            <i
+              onClick={() => updateScore(id, index, "add")}
+              className=" flex h-4 w-4 cursor-pointer items-center justify-center"
+            >
               {iconPlus}
             </i>
             <p className=" font-bold text-moderateBlue">{score}</p>
-            <i className="flex h-4 w-4 cursor-pointer items-center justify-center">
+            <i
+              onClick={() => updateScore(id, index, "subtract")}
+              className="flex h-4 w-4 cursor-pointer items-center justify-center"
+            >
               {iconMinus}
             </i>
           </div>
@@ -39,14 +47,12 @@ const Comment = ({ user, content, createdAt, score, replies }) => {
 
       <div className="mt-5 ml-6 border-l-2 border-lightGrayishBlue sm:ml-10 sm:pl-10">
         {replies &&
-          replies.map((reply, index) => (
+          replies.map((reply) => (
             <Comment
-              user={reply.user}
-              content={reply.content}
-              createdAt={reply.createdAt}
-              score={reply.score}
-              replies={[]}
-              key={index}
+              comment={reply}
+              key={reply.id}
+              updateScore={updateScore}
+              index={index}
             />
           ))}
       </div>

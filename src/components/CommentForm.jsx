@@ -9,6 +9,7 @@ const CommentForm = ({ user }) => {
           alt="avatar"
           className="h-10 w-10"
         />
+
         <textarea
           name="content"
           className=" w-full resize-none rounded border-2 border-lightGrayishBlue p-2"
@@ -17,7 +18,7 @@ const CommentForm = ({ user }) => {
         ></textarea>
         <button
           type="submit"
-          className="rounded-lg bg-moderateBlue px-6 py-2 text-white"
+          className=" rounded-lg bg-moderateBlue px-6 py-2 text-white"
         >
           SEND
         </button>
