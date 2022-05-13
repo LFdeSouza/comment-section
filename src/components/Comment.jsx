@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import Moment from "react-moment";
 import { iconPlus, iconMinus, iconReply } from "./icons";
+import CommentForm from "./CommentForm";
 
-const Comment = ({ comment, updateScore, index }) => {
+const Comment = ({ comment, updateScore, index, addComment }) => {
   const { user, content, createdAt, score, replies, id } = comment;
+  const [replyForm, setReplyForm] = useState(false);
 
   return (
     <>
       <div className="mx-auto flex w-11/12 flex-col rounded-md bg-white p-4 sm:flex-row sm:items-start sm:gap-4 sm:p-6 md:w-full">
-        <div className="sm:order-2">
+        <div className="w-full sm:order-2">
           <div className="flex items-center gap-4">
             <img
               src={require(`../assets/images/avatars/image-${user.username}.png`)}
@@ -15,8 +18,13 @@ const Comment = ({ comment, updateScore, index }) => {
               className="h-10 w-10"
             />
             <h1 className="font-bold">{user.username}</h1>
-            <p className="text-gray-500">{createdAt}</p>
-            <p className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex">
+            <p className="text-gray-500">
+              {<Moment fromNow>{new Date(createdAt)}</Moment>}
+            </p>
+            <p
+              onClick={() => setReplyForm(!replyForm)}
+              className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
+            >
               {iconReply}Reply
             </p>
           </div>
@@ -39,12 +47,23 @@ const Comment = ({ comment, updateScore, index }) => {
               {iconMinus}
             </i>
           </div>
-          <p className="flex cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:hidden">
+          <p
+            onClick={() => setReplyForm(!replyForm)}
+            className="flex cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:hidden"
+          >
             {iconReply}Reply
           </p>
         </div>
       </div>
-
+      <div className="my-5">
+        {replyForm && (
+          <CommentForm
+            addComment={addComment}
+            replyingTo={comment.replyingTo}
+            index={index}
+          />
+        )}
+      </div>
       <div className="mt-5 ml-6 border-l-2 border-lightGrayishBlue sm:ml-10 sm:pl-10">
         {replies &&
           replies.map((reply) => (
@@ -53,6 +72,7 @@ const Comment = ({ comment, updateScore, index }) => {
               key={reply.id}
               updateScore={updateScore}
               index={index}
+              addComment={addComment}
             />
           ))}
       </div>
