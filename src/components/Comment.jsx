@@ -1,7 +1,14 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../App";
 import Moment from "react-moment";
-import { iconPlus, iconMinus, iconReply, iconDelete, iconEdit } from "./icons";
+import {
+  PlusIcon,
+  MinusIcon,
+  ReplyIcon,
+  EditIcon,
+  DeleteIcon,
+  CrudIcons,
+} from "./Icons";
 import CommentForm from "./CommentForm";
 
 const Comment = ({
@@ -30,32 +37,16 @@ const Comment = ({
             <p className="text-gray-500">
               {<Moment fromNow>{new Date(createdAt)}</Moment>}
             </p>
-            {currUser.username !== user.username && (
-              <p
-                onClick={() => setReplyForm(!replyForm)}
-                className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
-              >
-                {iconReply}Reply
-              </p>
-            )}
-            {currUser.username === user.username && (
-              <p
-                onClick={() =>
-                  onDelete({ isOpen: true, commentArrIndex, replyArrIndex, id })
-                }
-                className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-softRed sm:flex"
-              >
-                {iconDelete}Delete
-              </p>
-            )}
-            {currUser.username === user.username && (
-              <p
-                onClick={() => setReplyForm(!replyForm)}
-                className=" hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
-              >
-                {iconEdit}Edit
-              </p>
-            )}
+            <CrudIcons
+              replyForm={replyForm}
+              setReplyForm={setReplyForm}
+              onDelete={onDelete}
+              commentArrIndex={commentArrIndex}
+              replyArrIndex={replyArrIndex}
+              id={id}
+              currUser={currUser.username}
+              user={user.username}
+            />
           </div>
           <p className="mt-4 text-gray-500">
             <span className="text-lg font-semibold text-moderateBlue">
@@ -67,26 +58,29 @@ const Comment = ({
 
         <div className="mt-2 flex items-center justify-between">
           <div className="flex w-fit items-center justify-center gap-4 rounded-lg bg-lightGray py-2 px-4 sm:min-h-[7.5rem] sm:flex-col sm:p-2">
-            <i
-              onClick={() => updateScore(id, commentArrIndex, "add")}
-              className=" flex h-4 w-4 cursor-pointer items-center justify-center"
-            >
-              {iconPlus}
-            </i>
+            <PlusIcon
+              updateScore={updateScore}
+              id={id}
+              commentArrIndex={commentArrIndex}
+            />
             <p className=" font-bold text-moderateBlue">{score}</p>
-            <i
-              onClick={() => updateScore(id, commentArrIndex, "subtract")}
-              className="flex h-4 w-4 cursor-pointer items-center justify-center"
-            >
-              {iconMinus}
-            </i>
+            <MinusIcon
+              updateScore={updateScore}
+              id={id}
+              commentArrIndex={commentArrIndex}
+            />
           </div>
-          <p
-            onClick={() => setReplyForm(!replyForm)}
-            className="flex cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:hidden"
-          >
-            {iconReply}Reply
-          </p>
+          <CrudIcons
+            replyForm={replyForm}
+            setReplyForm={setReplyForm}
+            onDelete={onDelete}
+            commentArrIndex={commentArrIndex}
+            replyArrIndex={replyArrIndex}
+            id={id}
+            currUser={currUser.username}
+            user={user.username}
+            lower={true}
+          />
         </div>
       </div>
       <div className="my-5">

@@ -26,31 +26,34 @@ const CommentForm = ({
 
   return (
     <form
-      className="mx-auto min-h-[10rem] w-11/12 rounded-lg bg-white p-8 sm:w-full"
+      className="mx-auto min-h-[10rem] w-11/12 rounded-lg bg-white p-6 md:w-full"
       onSubmit={(e) => onSubmit(e)}
     >
-      <div className="flex items-start justify-start gap-3">
-        <img
-          src={require(`../assets/images/avatars/image-${user.username}.png`)}
-          alt="avatar"
-          className="h-10 w-10"
-        />
-
+      {/* <div className="flex items-start justify-start gap-3"> */}
+      <div className="grid grid-cols-3 items-center gap-2 sm:flex sm:items-start">
         <textarea
           name="content"
           value={content}
           onChange={(e) => onChange(e.target.value)}
-          className=" w-full resize-none rounded border-2 border-lightGrayishBlue p-2"
-          rows="3"
+          className="  col-span-3 w-full resize-none rounded border-2 border-lightGrayishBlue p-2 sm:order-2"
+          rows="4"
           placeholder="Add a comment..."
         ></textarea>
+
+        <img
+          src={require(`../assets/images/avatars/image-${user.username}.png`)}
+          alt="avatar"
+          className=" col-span-2 h-10 w-10 sm:order-1"
+        />
         <button
           type="submit"
-          className=" rounded-lg bg-moderateBlue px-6 py-2 text-white"
+          className=" rounded-lg bg-moderateBlue px-8 py-3 text-white sm:order-3"
         >
           SEND
         </button>
       </div>
+
+      {/* </div> */}
     </form>
   );
 };

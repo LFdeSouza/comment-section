@@ -26,7 +26,6 @@ function App() {
   }, [state]);
 
   const updateScore = (id, commentArrIndex, operation) => {
-    console.log(id, commentArrIndex, operation);
     if (id === state.comments[commentArrIndex].id) {
       const newComments = state.comments;
       operation === "add"
