@@ -29,7 +29,6 @@ const CommentForm = ({
       className="mx-auto min-h-[10rem] w-11/12 rounded-lg bg-white p-6 md:w-full"
       onSubmit={(e) => onSubmit(e)}
     >
-      {/* <div className="flex items-start justify-start gap-3"> */}
       <div className="grid grid-cols-3 items-center gap-2 sm:flex sm:items-start">
         <textarea
           name="content"
@@ -47,13 +46,11 @@ const CommentForm = ({
         />
         <button
           type="submit"
-          className=" rounded-lg bg-moderateBlue px-8 py-3 text-white sm:order-3"
+          className=" rounded-lg bg-moderateBlue px-4 py-3 text-white sm:order-3 sm:px-6"
         >
           SEND
         </button>
       </div>
-
-      {/* </div> */}
     </form>
   );
 };

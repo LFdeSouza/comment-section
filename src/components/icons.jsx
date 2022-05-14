@@ -1,5 +1,3 @@
-import { useContext } from "react";
-
 export const PlusIcon = ({ updateScore, id, commentArrIndex }) => (
   <i
     onClick={() => updateScore(id, commentArrIndex, "add")}
@@ -93,6 +91,8 @@ export const CrudIcons = ({
   id,
   currUser,
   user,
+  setUpdateForm,
+  updateForm,
 }) =>
   currUser === user ? (
     <div
@@ -115,7 +115,9 @@ export const CrudIcons = ({
         Delete
       </i>
       <i
-        onClick={() => setReplyForm(false)}
+        onClick={() => {
+          setUpdateForm({ ...updateForm, isOpen: !updateForm.isOpen });
+        }}
         className="   flex cursor-pointer items-center gap-2 text-lg font-bold not-italic text-moderateBlue"
       >
         <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg">

@@ -1,14 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../App";
 import Moment from "react-moment";
-import {
-  PlusIcon,
-  MinusIcon,
-  ReplyIcon,
-  EditIcon,
-  DeleteIcon,
-  CrudIcons,
-} from "./Icons";
+import { PlusIcon, MinusIcon, CrudIcons } from "./Icons";
 import CommentForm from "./CommentForm";
 
 const Comment = ({
@@ -18,10 +11,20 @@ const Comment = ({
   updateScore,
   addComment,
   onDelete,
+  editComment,
 }) => {
   const { user, content, createdAt, score, replies, id } = comment;
   const currUser = useContext(UserContext);
   const [replyForm, setReplyForm] = useState(false);
+  const [updateForm, setUpdateForm] = useState({ isOpen: false, content });
+
+  const onChange = (value) => setUpdateForm({ ...updateForm, content: value });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    editComment(updateForm.content, commentArrIndex, replyArrIndex);
+    setUpdateForm({ ...updateForm, isOpen: false });
+  };
 
   return (
     <>
@@ -46,14 +49,37 @@ const Comment = ({
               id={id}
               currUser={currUser.username}
               user={user.username}
+              updateForm={updateForm}
+              setUpdateForm={setUpdateForm}
             />
           </div>
-          <p className="mt-4 text-gray-500">
-            <span className="text-lg font-semibold text-moderateBlue">
-              {comment.replyingTo && `@${comment.replyingTo} `}
-            </span>
-            {content}
-          </p>
+
+          {updateForm.isOpen ? (
+            <form
+              onSubmit={(e) => onSubmit(e)}
+              className="flex flex-col items-end"
+            >
+              <textarea
+                onChange={(e) => onChange(e.target.value)}
+                className="mt-4 w-full resize-none rounded border-2 border-lightGrayishBlue p-2"
+                value={updateForm.content}
+                rows="3"
+              />
+              <button
+                className="mt-2 rounded bg-moderateBlue py-2 px-4 text-white "
+                type="submit"
+              >
+                UPDATE
+              </button>
+            </form>
+          ) : (
+            <p className="mt-4 text-gray-500">
+              <span className="text-lg font-semibold text-moderateBlue">
+                {comment.replyingTo && `@${comment.replyingTo} `}
+              </span>
+              {content}
+            </p>
+          )}
         </div>
 
         <div className="mt-2 flex items-center justify-between">
@@ -80,9 +106,12 @@ const Comment = ({
             currUser={currUser.username}
             user={user.username}
             lower={true}
+            updateForm={updateForm}
+            setUpdateForm={setUpdateForm}
           />
         </div>
       </div>
+
       <div className="my-5">
         {replyForm && (
           <CommentForm
@@ -93,6 +122,7 @@ const Comment = ({
           />
         )}
       </div>
+
       <div className="mt-5 ml-6 border-l-2 border-lightGrayishBlue sm:ml-10 sm:pl-10">
         {replies &&
           replies.map((reply, index) => (
@@ -104,6 +134,7 @@ const Comment = ({
               addComment={addComment}
               onDelete={onDelete}
               replyArrIndex={index}
+              editComment={editComment}
             />
           ))}
       </div>

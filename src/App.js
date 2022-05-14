@@ -94,15 +94,23 @@ function App() {
     });
   };
 
-  const editComment = (id, index, content) => {};
+  const editComment = (content, commentArrIndex, replyArrIndex) => {
+    console.log(content);
+    const comments = state.comments;
+    if (replyArrIndex) {
+      comments[commentArrIndex].replies[replyArrIndex].content = content;
+      console.log(comments);
+      setState({ ...state, comments });
+    } else {
+      comments[commentArrIndex].content = content;
+      console.log(comments);
+      setState({ ...state, comments });
+    }
+  };
 
   return (
     <UserContext.Provider value={state.currentUser}>
-      <section
-        className={`min-w-screen min-h-screen ${
-          deleteModal.isOpen && "max-h-screen overflow-y-hidden pr-4"
-        }  bg-lightGray py-8`}
-      >
+      <section className={`min-w-screen min-h-screen bg-lightGray py-8`}>
         <div className="mx-auto max-w-2xl">
           {state.comments &&
             state.comments.map((comment, index) => (
@@ -113,6 +121,7 @@ function App() {
                 updateScore={updateScore}
                 addComment={addComment}
                 onDelete={setDeleteModal}
+                editComment={editComment}
               />
             ))}
           <CommentForm addComment={addComment} />
