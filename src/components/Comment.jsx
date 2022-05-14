@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "../App";
 import Moment from "react-moment";
-import { iconPlus, iconMinus, iconReply } from "./icons";
+import { iconPlus, iconMinus, iconReply, iconDelete, iconEdit } from "./icons";
 import CommentForm from "./CommentForm";
 
-const Comment = ({ comment, updateScore, index, addComment }) => {
+const Comment = ({
+  comment,
+  commentArrIndex,
+  replyArrIndex,
+  updateScore,
+  addComment,
+  onDelete,
+}) => {
   const { user, content, createdAt, score, replies, id } = comment;
+  const currUser = useContext(UserContext);
   const [replyForm, setReplyForm] = useState(false);
 
   return (
@@ -21,27 +30,52 @@ const Comment = ({ comment, updateScore, index, addComment }) => {
             <p className="text-gray-500">
               {<Moment fromNow>{new Date(createdAt)}</Moment>}
             </p>
-            <p
-              onClick={() => setReplyForm(!replyForm)}
-              className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
-            >
-              {iconReply}Reply
-            </p>
+            {currUser.username !== user.username && (
+              <p
+                onClick={() => setReplyForm(!replyForm)}
+                className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
+              >
+                {iconReply}Reply
+              </p>
+            )}
+            {currUser.username === user.username && (
+              <p
+                onClick={() =>
+                  onDelete({ isOpen: true, commentArrIndex, replyArrIndex, id })
+                }
+                className="ml-auto hidden cursor-pointer items-center gap-2 font-bold text-softRed sm:flex"
+              >
+                {iconDelete}Delete
+              </p>
+            )}
+            {currUser.username === user.username && (
+              <p
+                onClick={() => setReplyForm(!replyForm)}
+                className=" hidden cursor-pointer items-center gap-2 font-bold text-moderateBlue sm:flex"
+              >
+                {iconEdit}Edit
+              </p>
+            )}
           </div>
-          <p className="mt-4 text-gray-500">{content}</p>
+          <p className="mt-4 text-gray-500">
+            <span className="text-lg font-semibold text-moderateBlue">
+              {comment.replyingTo && `@${comment.replyingTo} `}
+            </span>
+            {content}
+          </p>
         </div>
 
         <div className="mt-2 flex items-center justify-between">
           <div className="flex w-fit items-center justify-center gap-4 rounded-lg bg-lightGray py-2 px-4 sm:min-h-[7.5rem] sm:flex-col sm:p-2">
             <i
-              onClick={() => updateScore(id, index, "add")}
+              onClick={() => updateScore(id, commentArrIndex, "add")}
               className=" flex h-4 w-4 cursor-pointer items-center justify-center"
             >
               {iconPlus}
             </i>
             <p className=" font-bold text-moderateBlue">{score}</p>
             <i
-              onClick={() => updateScore(id, index, "subtract")}
+              onClick={() => updateScore(id, commentArrIndex, "subtract")}
               className="flex h-4 w-4 cursor-pointer items-center justify-center"
             >
               {iconMinus}
@@ -59,20 +93,23 @@ const Comment = ({ comment, updateScore, index, addComment }) => {
         {replyForm && (
           <CommentForm
             addComment={addComment}
-            replyingTo={comment.replyingTo}
-            index={index}
+            replyingTo={user.username}
+            closeReplyForm={setReplyForm}
+            commentArrIndex={commentArrIndex}
           />
         )}
       </div>
       <div className="mt-5 ml-6 border-l-2 border-lightGrayishBlue sm:ml-10 sm:pl-10">
         {replies &&
-          replies.map((reply) => (
+          replies.map((reply, index) => (
             <Comment
               comment={reply}
               key={reply.id}
               updateScore={updateScore}
-              index={index}
+              commentArrIndex={commentArrIndex}
               addComment={addComment}
+              onDelete={onDelete}
+              replyArrIndex={index}
             />
           ))}
       </div>

@@ -14,25 +14,31 @@ function App() {
   const [state, setState] = useState(
     JSON.parse(localStorage.getItem("commentSection"))
   );
-  const [modal, setModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    id: null,
+    commentArrIndex: null,
+    replyArrIndex: null,
+  });
 
   useEffect(() => {
     localStorage.setItem("commentSection", JSON.stringify(state));
   }, [state]);
 
-  const updateScore = (id, index, operation) => {
-    if (id === state.comments[index].id) {
+  const updateScore = (id, commentArrIndex, operation) => {
+    console.log(id, commentArrIndex, operation);
+    if (id === state.comments[commentArrIndex].id) {
       const newComments = state.comments;
       operation === "add"
-        ? newComments[index].score++
-        : newComments[index].score--;
+        ? newComments[commentArrIndex].score++
+        : newComments[commentArrIndex].score--;
       setState({
         ...state,
         comments: newComments,
       });
     } else {
       const newComments = state.comments;
-      newComments[index].replies.map((reply) =>
+      newComments[commentArrIndex].replies.map((reply) =>
         reply.id === id && operation === "add"
           ? reply.score++
           : reply.id === id && operation === "subtract"
@@ -46,48 +52,79 @@ function App() {
     }
   };
 
-  const addComment = (user, content, index, replyingTo) => {
+  const addComment = (user, content, commentArrIndex, replyingTo) => {
     const comment = {
       id: Math.random(),
       createdAt: new Date(),
       content,
       score: 0,
+      replies: [],
       user: {
         image: { png: `../assets/images/avatars/image-${user.username}.png` },
         username: user.username,
       },
+      replyingTo,
     };
 
-    if (replyingTo) {
+    if (commentArrIndex != null) {
       const comments = state.comments;
-      comments[index].replies.push(comment);
-      setState({ ...state, comments: comments });
+      comments[commentArrIndex].replies.push(comment);
+      setState({ ...state, comments });
     } else {
       setState({ ...state, comments: [...state.comments, comment] });
     }
   };
 
+  const deleteComment = (id, commentArrIndex) => {
+    if (id !== state.comments[commentArrIndex].id) {
+      const comments = state.comments;
+      comments[commentArrIndex].replies = comments[
+        commentArrIndex
+      ].replies.filter((item) => item.id !== id);
+      setState({ ...state, comments });
+    } else {
+      console.log(id, commentArrIndex);
+      const comments = state.comments.filter((item) => item.id !== id);
+      setState({ ...state, comments });
+    }
+    setDeleteModal({
+      isOpen: false,
+      id: null,
+      commentArrIndex: null,
+      replyArrIndex: null,
+    });
+  };
+
+  const editComment = (id, index, content) => {};
+
   return (
     <UserContext.Provider value={state.currentUser}>
       <section
         className={`min-w-screen min-h-screen ${
-          modal && "max-h-screen overflow-y-hidden"
-        } bg-lightGray py-8`}
+          deleteModal.isOpen && "max-h-screen overflow-y-hidden pr-4"
+        }  bg-lightGray py-8`}
       >
         <div className="mx-auto max-w-2xl">
           {state.comments &&
             state.comments.map((comment, index) => (
               <Comment
                 key={comment.id}
-                index={index}
+                commentArrIndex={index}
                 comment={comment}
                 updateScore={updateScore}
                 addComment={addComment}
+                onDelete={setDeleteModal}
               />
             ))}
           <CommentForm addComment={addComment} />
         </div>
-        {modal && <Modal />}
+        {deleteModal.isOpen && (
+          <Modal
+            deleteComment={deleteComment}
+            closeModal={setDeleteModal}
+            commentData={deleteModal}
+          />
+        )}
       </section>
     </UserContext.Provider>
   );

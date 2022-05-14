@@ -1,7 +1,12 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../App";
 
-const CommentForm = ({ addComment, replyingTo, index }) => {
+const CommentForm = ({
+  addComment,
+  replyingTo,
+  commentArrIndex,
+  closeReplyForm,
+}) => {
   const user = useContext(UserContext);
   const [content, setContent] = useState("");
 
@@ -11,8 +16,12 @@ const CommentForm = ({ addComment, replyingTo, index }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    addComment(user, content, index, replyingTo);
+    if (content === "") return;
+    addComment(user, content, commentArrIndex, replyingTo);
     setContent("");
+    if (closeReplyForm) {
+      closeReplyForm(false);
+    }
   };
 
   return (

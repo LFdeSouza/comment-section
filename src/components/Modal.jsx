@@ -1,6 +1,9 @@
 import React from "react";
 
-const Modal = () => {
+const Modal = ({ deleteComment, closeModal, commentData }) => {
+  const { id, commentArrIndex, replyArrIndex } = commentData;
+  {
+  }
   return (
     <div className="fixed inset-0 z-50 h-screen w-screen overflow-hidden bg-black/40">
       <div className=" fixed top-1/2 left-1/2 h-[14rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 space-y-3 rounded-lg bg-white p-8">
@@ -10,10 +13,16 @@ const Modal = () => {
           comment and cannot be undone.
         </p>
         <div className="mt-5 flex items-center justify-between">
-          <button className="rounded bg-grayishBlue py-3 px-9 text-sm font-semibold text-white">
+          <button
+            onClick={() => closeModal({ isOpen: false })}
+            className="rounded bg-grayishBlue py-3 px-9 text-sm font-semibold text-white"
+          >
             NO, CANCEL
           </button>
-          <button className="rounded bg-softRed py-3 px-9 text-sm font-semibold text-white">
+          <button
+            onClick={() => deleteComment(id, commentArrIndex, replyArrIndex)}
+            className="rounded bg-softRed py-3 px-9 text-sm font-semibold text-white"
+          >
             YES, DELETE
           </button>
         </div>
